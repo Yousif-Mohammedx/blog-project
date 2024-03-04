@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getCommentsData } from "../../data/comments";
 import CommentForm from './CommentForm';
 import Comment from './Comment';
+import { MdOutlineCommentsDisabled } from 'react-icons/md';
 
 const CommentsContainer = ({ className, logginedUserId }) => {
     const [comments, setComments] = useState([]);
@@ -32,14 +33,25 @@ const CommentsContainer = ({ className, logginedUserId }) => {
         };
         setComments((curState) => {
             return [newComment, ...curState]
-        })
+        });
+        setAffectedComment(null);
     };
+    const updateCommentHandler = (value, commentId) => {
+        const updatedComments = comments.map((comment) => {
+          if (comment._id === commentId) {
+            return { ...comment, desc: value };
+          }
+          return comment;
+        });
+        setComments(updatedComments);
+        setAffectedComment(null);
+      };
     return (
         <div className={`${className}`}>
             <CommentForm btnLabel="Send" formSubmitHandler={(value) => addCommentHandler(value)} />
             <div className='space-y-4 mt-8'>
                 {mainComments.map((comment) => (
-                    <Comment comment={comment} logginedUserId={logginedUserId} affectedComment={affectedComment} setAffectedComment={setAffectedComment} addComment={addCommentHandler} />
+                    <Comment key={comment._id} comment={comment} logginedUserId={logginedUserId} affectedComment={affectedComment} setAffectedComment={setAffectedComment} addComment={addCommentHandler} updateComment={updateCommentHandler} />
                 ))}
             </div>
         </div>
