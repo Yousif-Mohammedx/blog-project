@@ -6,7 +6,7 @@ import { MdDelete } from "react-icons/md";
 import CommentForm from './CommentForm';
 
 
-const Comment = ({ comment, logginedUserId, affectedComment, setAffectedComment, addComment, parentId = null, updateComment, }) => {
+const Comment = ({ comment, logginedUserId, affectedComment, setAffectedComment, addComment, parentId = null, updateComment, deleteComment, replies, }) => {
     const isUserLoggined = Boolean(logginedUserId);
     const commentBelongsToUser = logginedUserId == comment.user._id;
     const isReplying = affectedComment && affectedComment.type === 'replying' && affectedComment._id === comment._id;
@@ -46,11 +46,29 @@ const Comment = ({ comment, logginedUserId, affectedComment, setAffectedComment,
                                 <MdOutlineEdit className='w-4 h-auto' />
                                 <span>Edit</span>
                             </button>
-                            <button className='flex items-center space-x-2'>
+                            <button className='flex items-center space-x-2' onClick={() => deleteComment(comment._id)}>
                                 <MdDelete className='w-4 h-auto' />
                                 <span>Delete</span>
                             </button>
                         </>
+                    )}
+                    {replies.length > 0 && (
+                        <div>
+                            {replies.map((reply) => (
+                                <Comment 
+                                key={reply._id} 
+                                addComment={addComment} 
+                                affectedComment={affectedComment} 
+                                setAffectedComment={setAffectedComment} 
+                                comment={reply}
+                                deleteComment={deleteComment}
+                                logginedUserId={logginedUserId}
+                                replies={[]}
+                                updateComment={updateComment}
+                                parentId={comment._id}
+                                />
+                            ))}
+                        </div> 
                     )}
                 </div>
                 {isReplying && (
