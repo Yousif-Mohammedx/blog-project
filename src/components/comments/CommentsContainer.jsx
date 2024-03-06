@@ -18,7 +18,7 @@ const CommentsContainer = ({ className, logginedUserId }) => {
 
     console.log(comments);
 
-    const addCommentHandler = (value, parnet = null, replyOnUser = null) => {
+    const addCommentHandler = (value, parent = null, replyOnUser = null) => {
         const newComment = {
             _id: Math.random().toString(),
             user: {
@@ -27,7 +27,7 @@ const CommentsContainer = ({ className, logginedUserId }) => {
             },
             desc: value,
             post: "1",
-            parent: parnet,
+            parent: parent,
             replyOnUser: replyOnUser,
             createdAt: new Date().toISOString(),
         };
