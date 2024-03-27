@@ -1,15 +1,18 @@
 import React from 'react';
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link } from "react-router-dom";
+import { Link, userNavigate } from "react-router-dom";
 import MainLayout from "../../components/MainLayout";
 import { useMutation } from "@tanstack/react-query";
 import { signup } from "../../services/index/users";
 import toast from 'react-hot-toast';
-import { UseDispatch, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from "../../store/reducers/userReducers";
 
 const RegisterPage = () => {
+    const navigate = userNavigate()
     const dispatch = useDispatch();
+    const userState = useSelector(state => state.user)
     const { mutate, isLoading } = useMutation({
         mutationFn: ({ name, email, password }) => {
             return signup({ name, email, password });
@@ -23,6 +26,12 @@ const RegisterPage = () => {
             console.log(error);
         },
     })
+
+    useEffect(() => {
+        if (userState.userInfo) {
+            navigate("/");
+        }
+    }, [navigate, userState.userInfo]);
     const { register, handleSubmit, formState: { errors, isValid },
         watch,
     } = useForm({
