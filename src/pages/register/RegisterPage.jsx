@@ -32,6 +32,7 @@ const RegisterPage = () => {
             navigate("/");
         }
     }, [navigate, userState.userInfo]);
+    
     const { register, handleSubmit, formState: { errors, isValid },
         watch,
     } = useForm({
