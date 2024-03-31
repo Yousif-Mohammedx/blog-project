@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link, userNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/MainLayout";
 import { useMutation } from "@tanstack/react-query";
 import { signup } from "../../services/index/users";
@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from "../../store/reducers/userReducers";
 
 const RegisterPage = () => {
-    const navigate = userNavigate()
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const userState = useSelector(state => state.user)
     const { mutate, isLoading } = useMutation({
