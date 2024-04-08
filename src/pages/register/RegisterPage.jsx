@@ -1,41 +1,25 @@
-import React from 'react';
-import { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/MainLayout";
 import { useMutation } from "@tanstack/react-query";
-import { signup } from "../../services/index/users";
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from "../../store/reducers/userReducers";
+import { signup } from "../../services/index/users";
 
 const RegisterPage = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const userState = useSelector(state => state.user)
-    const { mutate, isLoading } = useMutation({
-        mutationFn: ({ name, email, password }) => {
-            return signup({ name, email, password });
-        },
-        onSuccess: (data) => {
-            dispatch(userActions.setUserInfo(data));
-            localStorage.setItem('account', JSON.stringify(data));
-        },
-        onError: (error) => {
-            toast.error(error.message)
-            console.log(error);
-        },
-    })
+    const userState = useSelector(state => state.user);
 
     useEffect(() => {
         if (userState.userInfo) {
             navigate("/");
         }
     }, [navigate, userState.userInfo]);
-    
-    const { register, handleSubmit, formState: { errors, isValid },
-        watch,
-    } = useForm({
+
+    const { register, handleSubmit, formState: { errors, isValid }, watch } = useForm({
         defaultValues: {
             name: "",
             email: "",
@@ -44,8 +28,21 @@ const RegisterPage = () => {
         },
         mode: "onChange",
     });
+
+    const mutation = useMutation({
+        mutationFn: ({ name, email, password }) => signup({ name, email, password }),
+        onSuccess: (data) => {
+            dispatch(userActions.setUserInfo(data));
+            localStorage.setItem('account', JSON.stringify(data));
+        },
+        onError: (error) => {
+            toast.error(error.message);
+            console.log(error);
+        },
+    });
+
     const submitHandler = (data) => {
-        console.log(data);
+        mutation.mutate(data);
     };
     const password = watch('password');
     return (
@@ -126,8 +123,7 @@ const RegisterPage = () => {
                             />
                             {errors.confirmPassword && <p className='text-red-500 text-xs mt-1'>{errors.confirmPassword.message}</p>}
                         </div>
-                        <Link to="/forgot-password" className='text-sm font-semitbold text-primary'>Forgot password?</Link>
-                        <button type="submit" disabled={!isValid} className='bg-primary text-white font-bold text-lg py-4 px-8 w-full rounded-lg my-6 disabled:opacity-70 disabled:cursor-not-allowed'>Register</button>
+                        <button type="submit" disabled={!isValid} className="bg-primary text-white font-bold text-lg py-4 px-8 w-full rounded-lg mb-6 disabled:opacity-70 disabled:cursor-not-allowed" Z>Register</button>
                         <p className='text-sm font-semibold text-[#5a7184]'>You have an account?
                             <Link to="/login" className='text-primary'> Login now</Link>
                         </p>
